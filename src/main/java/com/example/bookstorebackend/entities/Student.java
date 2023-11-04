@@ -39,4 +39,8 @@ public class Student {
     )
     private List<Book> currentlyReadings;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
 }

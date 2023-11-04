@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 public class SignUpRequestDTO {
 
@@ -27,5 +29,9 @@ public class SignUpRequestDTO {
     @NotNull
     @Size(min = 6, max = 100)
     private String cpassword;
+
+    @NotBlank
+    @NotNull
+    private Set<String> roles;
 
 }

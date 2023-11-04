@@ -24,4 +24,8 @@ public class Author {
 
     @Column(name = "age", nullable = false, unique = true)
     private int age;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }
