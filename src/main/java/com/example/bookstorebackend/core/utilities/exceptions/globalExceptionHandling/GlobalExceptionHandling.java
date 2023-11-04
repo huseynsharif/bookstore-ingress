@@ -84,6 +84,19 @@ public class GlobalExceptionHandling {
 
     }
 
+    @ExceptionHandler(value = EmailAlreadyExistsException.class)
+    public ResponseEntity<DataResult<ExceptionResponseBody>> handlingTokenExpiredException(){
+
+        ExceptionResponseBody exceptionResponseBody = new ExceptionResponseBody(
+                400,
+                "Token is expired.",
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(new ErrorDataResult<>(exceptionResponseBody, "Something went wrong."), HttpStatus.NOT_ACCEPTABLE);
+
+    }
+
 
 
 }

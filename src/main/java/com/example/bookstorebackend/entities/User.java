@@ -29,6 +29,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "verified")
+    private boolean verified;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",

@@ -1,11 +1,11 @@
 package com.example.bookstorebackend.business.concretes;
 
 import com.example.bookstorebackend.business.abstracts.UserService;
+import com.example.bookstorebackend.core.security.entities.CustomUserDetails;
+import com.example.bookstorebackend.core.security.jwt.JwtUtils;
 import com.example.bookstorebackend.core.utilities.emailSendings.abstracts.EmailService;
-import com.example.bookstorebackend.core.utilities.results.DataResult;
-import com.example.bookstorebackend.core.utilities.results.ErrorDataResult;
-import com.example.bookstorebackend.core.utilities.results.Result;
-import com.example.bookstorebackend.core.utilities.results.SuccessResult;
+import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.*;
+import com.example.bookstorebackend.core.utilities.results.*;
 import com.example.bookstorebackend.dataAccess.abstracts.RoleDAO;
 import com.example.bookstorebackend.dataAccess.abstracts.UserDAO;
 import com.example.bookstorebackend.dataAccess.abstracts.VerificationDAO;
@@ -17,12 +17,19 @@ import com.example.bookstorebackend.entities.dtos.request.LoginRequestDTO;
 import com.example.bookstorebackend.entities.dtos.request.SignUpRequestDTO;
 import com.example.bookstorebackend.entities.dtos.response.UserLoginResponseDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,19 +41,21 @@ public class UserManager implements UserService {
 
     private PasswordEncoder passwordEncoder;
     private EmailService emailService;
+    private AuthenticationManager authenticationManager;
+    private JwtUtils jwtUtils;
 
     @Override
     public Result signUp(SignUpRequestDTO signUpRequestDTO) {
         if (!Objects.equals(signUpRequestDTO.getPassword(), signUpRequestDTO.getCpassword())) {
-            return new ErrorDataResult<>("Passwords must be same.");
+            throw new PasswordIsNotSameException("Passwords must be same.");
         }
 
         if (this.userDAO.existsUserByUsername(signUpRequestDTO.getUsername())) {
-            return new ErrorDataResult<>("Username was already taken.");
+            throw new UsernameAlreadyExistsException("Username already exists.");
         }
 
         if (this.userDAO.existsUserByEmail(signUpRequestDTO.getEmail())) {
-            return new ErrorDataResult<>("Email was already taken.");
+            throw new EmailAlreadyExistsException("Email already exists.");
         }
 
         Set<String> strRoles = signUpRequestDTO.getRoles();
@@ -100,11 +109,49 @@ public class UserManager implements UserService {
 
     @Override
     public DataResult<UserLoginResponseDTO> logIn(LoginRequestDTO loginRequestDTO) {
-        return null;
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+        return new SuccessDataResult<>(new UserLoginResponseDTO(
+                userDetails.getId(),
+                userDetails.getUsername(),
+                jwt,
+                roles), "Successfully logged in.");
+
     }
 
     @Override
     public Result verifyEmailWithLink(int userId, String token) {
-        return null;
+        Verification emailVerification = this.verificationDAO.findVerificationByUser_Id(userId);
+
+        if (emailVerification == null) {
+            throw new NotFoundException("Cannot find verification with userId: " + userId);
+        }
+
+        if (!Objects.equals(emailVerification.getToken(), token)) {
+            return new ErrorResult("Token is incorrect: " + token);
+        }
+
+        if (emailVerification.getCreatedAt().plusMinutes(30).isBefore(LocalDateTime.now())) {
+            throw new TokenExpiredException("Token is expired.");
+        }
+
+        User user = this.userDAO.findById(userId).orElse(null);
+        if (user == null) {
+            throw new NotFoundException("Cannot find user with given userId: "+userId);
+        }
+
+        user.setVerified(true);
+        this.userDAO.save(user);
+        this.verificationDAO.delete(emailVerification);
+        return new SuccessResult("Successfully verified.");
     }
 }
