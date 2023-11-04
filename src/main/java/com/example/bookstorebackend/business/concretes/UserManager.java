@@ -155,3 +155,5 @@ public class UserManager implements UserService {
         return new SuccessResult("Successfully verified.");
     }
 }
+
+// TODO: Id null olur niyese

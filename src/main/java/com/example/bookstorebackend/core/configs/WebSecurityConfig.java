@@ -65,10 +65,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/chat/**").permitAll()
-                                .requestMatchers("/topic/**").permitAll()
                                 .requestMatchers(permitSwagger).permitAll()
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());

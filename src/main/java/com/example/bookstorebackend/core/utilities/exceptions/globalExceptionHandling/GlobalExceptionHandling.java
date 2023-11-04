@@ -1,8 +1,6 @@
 package com.example.bookstorebackend.core.utilities.exceptions.globalExceptionHandling;
 
-import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.EmailAlreadyExistsException;
-import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.NotFoundException;
-import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.UsernameAlreadyExistsException;
+import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.*;
 import com.example.bookstorebackend.core.utilities.exceptions.entities.ExceptionResponseBody;
 import com.example.bookstorebackend.core.utilities.results.DataResult;
 import com.example.bookstorebackend.core.utilities.results.ErrorDataResult;
@@ -71,7 +69,7 @@ public class GlobalExceptionHandling {
 
     }
 
-    @ExceptionHandler(value = EmailAlreadyExistsException.class)
+    @ExceptionHandler(value = PasswordIsNotSameException.class)
     public ResponseEntity<DataResult<ExceptionResponseBody>> handlingPasswordsIsNotSame(){
 
         ExceptionResponseBody exceptionResponseBody = new ExceptionResponseBody(
@@ -84,7 +82,7 @@ public class GlobalExceptionHandling {
 
     }
 
-    @ExceptionHandler(value = EmailAlreadyExistsException.class)
+    @ExceptionHandler(value = TokenExpiredException.class)
     public ResponseEntity<DataResult<ExceptionResponseBody>> handlingTokenExpiredException(){
 
         ExceptionResponseBody exceptionResponseBody = new ExceptionResponseBody(

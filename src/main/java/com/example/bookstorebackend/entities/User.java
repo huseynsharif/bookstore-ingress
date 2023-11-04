@@ -37,7 +37,7 @@ public class User {
             name = "users_roles",
             joinColumns = @JoinColumn(
                     name = "user_user_id",
-                    referencedColumnName = "user_id"
+                    referencedColumnName = "id"
             ),
             inverseJoinColumns = @JoinColumn(
                     name = "roles_id",
