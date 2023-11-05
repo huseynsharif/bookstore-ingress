@@ -5,13 +5,10 @@ import com.example.bookstorebackend.entities.dtos.request.LoginRequestDTO;
 import com.example.bookstorebackend.entities.dtos.request.SignUpRequestDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 @AllArgsConstructor
 public class UserAuthController {
 
@@ -25,9 +22,16 @@ public class UserAuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> signUp(@RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<?> logIn(@RequestBody LoginRequestDTO loginRequestDTO){
 
         return ResponseEntity.ok(this.userService.logIn(loginRequestDTO));
+
+    }
+
+    @GetMapping("/verify-account-with-link")
+    public ResponseEntity<?> verifyAccountWithLink(@RequestParam("userId") int userId, @RequestParam("token") String token){
+
+        return ResponseEntity.ok(this.userService.verifyAccountWithLink(userId, token));
 
     }
 

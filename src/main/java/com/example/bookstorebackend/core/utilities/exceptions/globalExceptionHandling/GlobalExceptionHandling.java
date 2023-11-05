@@ -95,6 +95,32 @@ public class GlobalExceptionHandling {
 
     }
 
+    @ExceptionHandler(value = IncorrectTokenException.class)
+    public ResponseEntity<DataResult<ExceptionResponseBody>> handlingIncorrectToken(){
+
+        ExceptionResponseBody exceptionResponseBody = new ExceptionResponseBody(
+                400,
+                "Token is not correct.",
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(new ErrorDataResult<>(exceptionResponseBody, "Something went wrong."), HttpStatus.NOT_ACCEPTABLE);
+
+    }
+
+    @ExceptionHandler(value = UserIsNotVerifiedException.class)
+    public ResponseEntity<DataResult<ExceptionResponseBody>> handlingUserIsNotVerified(){
+
+        ExceptionResponseBody exceptionResponseBody = new ExceptionResponseBody(
+                400,
+                "User is not verified yet.",
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(new ErrorDataResult<>(exceptionResponseBody, "Something went wrong."), HttpStatus.NOT_ACCEPTABLE);
+
+    }
+
 
 
 }

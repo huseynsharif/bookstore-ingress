@@ -85,7 +85,6 @@ public class UserManager implements UserService {
                 roles
 
         );
-
         this.userDAO.save(user);
 
         // Email Verification
@@ -104,11 +103,17 @@ public class UserManager implements UserService {
     }
 
     private String verificationLinkGenerator(int id, String token) {
-        return null;
+        return "http://localhost:8080/api/auth/verify-account-with-link?userId="+id+"&token="+token;
     }
 
     @Override
     public DataResult<UserLoginResponseDTO> logIn(LoginRequestDTO loginRequestDTO) {
+
+        User user = this.userDAO.findUserByUsername(loginRequestDTO.getUsername()).orElseThrow(()-> new NotFoundException("Cannot find user."));
+
+        if (!user.isVerified()){
+            throw new UserIsNotVerifiedException("User is not verified");
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword()));
@@ -129,7 +134,7 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public Result verifyEmailWithLink(int userId, String token) {
+    public Result verifyAccountWithLink(int userId, String token) {
         Verification emailVerification = this.verificationDAO.findVerificationByUser_Id(userId);
 
         if (emailVerification == null) {
@@ -156,4 +161,3 @@ public class UserManager implements UserService {
     }
 }
 
-// TODO: Id null olur niyese

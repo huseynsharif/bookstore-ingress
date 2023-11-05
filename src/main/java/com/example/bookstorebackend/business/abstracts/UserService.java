@@ -12,6 +12,6 @@ public interface UserService {
 
     DataResult<UserLoginResponseDTO> logIn(LoginRequestDTO loginRequestDTO);
 
-    Result verifyEmailWithLink(int userId, String token);
+    Result verifyAccountWithLink(int userId, String token);
 
 }

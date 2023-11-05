@@ -43,4 +43,9 @@ public class Student {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    public Student(String name, int age, User user) {
+        this.name = name;
+        this.age = age;
+        this.user = user;
+    }
 }

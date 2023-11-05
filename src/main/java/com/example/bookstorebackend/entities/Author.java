@@ -28,4 +28,10 @@ public class Author {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    public Author(String name, int age, User user) {
+        this.name = name;
+        this.age = age;
+        this.user = user;
+    }
 }
