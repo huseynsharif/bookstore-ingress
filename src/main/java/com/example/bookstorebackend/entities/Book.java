@@ -24,4 +24,8 @@ public class Book {
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private Author author;
 
+    public Book(String name, Author author) {
+        this.name = name;
+        this.author = author;
+    }
 }

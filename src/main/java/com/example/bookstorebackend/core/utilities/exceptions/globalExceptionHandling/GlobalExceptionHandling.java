@@ -121,6 +121,19 @@ public class GlobalExceptionHandling {
 
     }
 
+    @ExceptionHandler(value = IllegalDeletionRequestException.class)
+    public ResponseEntity<DataResult<ExceptionResponseBody>> handlingIllegalDeletionRequest(){
+
+        ExceptionResponseBody exceptionResponseBody = new ExceptionResponseBody(
+                400,
+                "It is forbidden to delete other's book.",
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(new ErrorDataResult<>(exceptionResponseBody, "Something went wrong."), HttpStatus.NOT_ACCEPTABLE);
+
+    }
+
 
 
 }
