@@ -7,4 +7,6 @@ public interface AuthorService {
 
     Result add(AuthorRequestDTO authorRequestDTO);
 
+    Result update(AuthorRequestDTO authorRequestDTO);
+
 }

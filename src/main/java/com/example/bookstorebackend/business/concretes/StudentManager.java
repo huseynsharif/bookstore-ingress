@@ -23,7 +23,7 @@ public class StudentManager implements StudentService {
     public Result add(StudentRequestDTO studentRequestDTO) {
 
         User user = this.userDAO.findById(studentRequestDTO.getUserId())
-                .orElseThrow(()->new NotFoundException("Cannot find user with given id: "));
+                .orElseThrow(()->new NotFoundException("Cannot find user with given id: " + studentRequestDTO.getUserId()));
 
         Student newStudent = new Student(
                 studentRequestDTO.getName(),
@@ -32,5 +32,19 @@ public class StudentManager implements StudentService {
         );
         this.studentDAO.save(newStudent);
         return new SuccessResult("Student was saved successfully");
+    }
+
+    @Override
+    public Result update(StudentRequestDTO studentRequestDTO) {
+
+        Student student = this.studentDAO.findStudentByUser_Id(studentRequestDTO.getUserId());
+        if (student == null) {
+            throw new NotFoundException("Cannot find student with userId: " + studentRequestDTO.getUserId());
+        }
+
+        student.setName(studentRequestDTO.getName());
+        student.setAge(studentRequestDTO.getAge());
+        this.studentDAO.save(student);
+        return new SuccessResult("Student updated successfully.");
     }
 }

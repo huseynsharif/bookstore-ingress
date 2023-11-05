@@ -4,10 +4,7 @@ import com.example.bookstorebackend.business.abstracts.StudentService;
 import com.example.bookstorebackend.entities.dtos.request.StudentRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/students")
@@ -20,6 +17,13 @@ public class StudentController {
     public ResponseEntity<?> add(@RequestBody StudentRequestDTO studentRequestDTO){
 
         return ResponseEntity.ok(this.studentService.add(studentRequestDTO));
+
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody StudentRequestDTO studentRequestDTO){
+
+        return ResponseEntity.ok(this.studentService.update(studentRequestDTO));
 
     }
 
