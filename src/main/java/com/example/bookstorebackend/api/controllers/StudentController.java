@@ -27,4 +27,19 @@ public class StudentController {
 
     }
 
+    @PostMapping("/read-book")
+    public ResponseEntity<?> readBook(@RequestParam("bookId") int bookId, @RequestParam("studentId") int studentId){
+
+        return ResponseEntity.ok(this.studentService.readBook(bookId, studentId));
+
+    }
+
+    @PostMapping("/finish-book")
+    public ResponseEntity<?> finishBook(@RequestParam("bookId") int bookId, @RequestParam("studentId") int studentId){
+
+        return ResponseEntity.ok(this.studentService.finishBook(bookId, studentId));
+
+    }
+
+
 }

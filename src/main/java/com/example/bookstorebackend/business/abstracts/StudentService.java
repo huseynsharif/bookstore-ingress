@@ -10,6 +10,8 @@ public interface StudentService {
 
     Result update(StudentRequestDTO studentRequestDTO);
 
-    Result readBook(int bookId);
+    Result readBook(int bookId, int studentId);
+
+    Result finishBook(int bookId, int studentId);
 
 }
