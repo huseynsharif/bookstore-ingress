@@ -1,0 +1,29 @@
+version: '3'
+services:
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bookstore-app-image:latest
+    ports:
+      - "8081:8080"
+    restart: always
+    command: sh -c "yarn install && yarn start"
+    working_dir: /app
+    volumes:
+      - ./:/app
+
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: bookstore
+      POSTGRES_USER: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ../../docker-volumes/BookStoreBackend:/var/lib/postgresql/data
