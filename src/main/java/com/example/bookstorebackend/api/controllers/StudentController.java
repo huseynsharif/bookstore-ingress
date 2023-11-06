@@ -41,5 +41,11 @@ public class StudentController {
 
     }
 
+    @GetMapping("/get-all-currently-readings-by-student-id")
+    public ResponseEntity<?> getAllCurrentlyReadingsByStudentId(@RequestParam int studentId){
+        return ResponseEntity.ok(this.studentService.getAllCurrentlyReadingsByStudentId(studentId));
+    }
+
+
 
 }

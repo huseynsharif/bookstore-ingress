@@ -3,7 +3,9 @@ package com.example.bookstorebackend.business.concretes;
 import com.example.bookstorebackend.business.abstracts.StudentService;
 import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.AlreadyReadException;
 import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.NotFoundException;
+import com.example.bookstorebackend.core.utilities.results.DataResult;
 import com.example.bookstorebackend.core.utilities.results.Result;
+import com.example.bookstorebackend.core.utilities.results.SuccessDataResult;
 import com.example.bookstorebackend.core.utilities.results.SuccessResult;
 import com.example.bookstorebackend.dataAccess.abstracts.BookDAO;
 import com.example.bookstorebackend.dataAccess.abstracts.StudentDAO;
@@ -12,8 +14,11 @@ import com.example.bookstorebackend.entities.Book;
 import com.example.bookstorebackend.entities.Student;
 import com.example.bookstorebackend.entities.User;
 import com.example.bookstorebackend.entities.dtos.request.StudentRequestDTO;
+import com.example.bookstorebackend.entities.dtos.response.BookResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -92,5 +97,30 @@ public class StudentManager implements StudentService {
         this.studentDAO.save(student);
 
         return new SuccessResult("Successfully finished.");
+    }
+
+    @Override
+    public DataResult<List<BookResponseDTO>> getAllCurrentlyReadingsByStudentId(int studentId) {
+
+        Student student = this.studentDAO.findById(studentId).orElseThrow(
+                ()-> new NotFoundException("Cannot find student with given studentId: " + studentId)
+        );
+
+        List<Book> books = student.getCurrentlyReadings();
+
+        if (books.isEmpty()){
+            throw new NotFoundException("Cannot find book with given studentId: " + studentId);
+        }
+
+
+        List<BookResponseDTO> response = books.stream().map(
+                (book -> new BookResponseDTO(
+                        book.getId(),
+                        book.getName(),
+                        book.getAuthor().getName()
+                ))
+        ).toList();
+
+        return new SuccessDataResult<>(response, "All books student currently reading: " + studentId);
     }
 }

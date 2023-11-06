@@ -16,9 +16,14 @@ public class BookController {
 
     private final BookService bookService;
 
-    @GetMapping("get-all-by-name-ignore-case")
+    @GetMapping("/get-all-by-name-ignore-case")
     public ResponseEntity<?> getAllByNameContainsIgnoreCase(@RequestParam String name){
         return ResponseEntity.ok(this.bookService.getAllByNameContainsIgnoreCase(name));
+    }
+
+    @GetMapping("/get-students-by-currently-reading")
+    public ResponseEntity<?> getAllStudentByCurrentlyReading(@RequestParam int bookId){
+        return ResponseEntity.ok(this.bookService.getAllStudentByCurrentlyReading(bookId));
     }
 
 }
