@@ -2,7 +2,6 @@ package com.example.bookstorebackend.business.abstracts;
 
 import com.example.bookstorebackend.core.utilities.results.DataResult;
 import com.example.bookstorebackend.core.utilities.results.Result;
-import com.example.bookstorebackend.entities.Book;
 import com.example.bookstorebackend.entities.dtos.request.AuthorRequestDTO;
 import com.example.bookstorebackend.entities.dtos.request.NewBookRequestDTO;
 import com.example.bookstorebackend.entities.dtos.response.BookResponseDTO;

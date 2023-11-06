@@ -108,7 +108,8 @@ public class AuthorManager implements AuthorService {
         List<BookResponseDTO> response = books.stream().map(
                 (book -> new BookResponseDTO(
                         book.getId(),
-                        book.getName()
+                        book.getName(),
+                        book.getAuthor().getName()
                 ))
         ).toList();
 

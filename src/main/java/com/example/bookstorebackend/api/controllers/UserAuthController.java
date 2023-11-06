@@ -3,16 +3,16 @@ package com.example.bookstorebackend.api.controllers;
 import com.example.bookstorebackend.business.abstracts.UserService;
 import com.example.bookstorebackend.entities.dtos.request.LoginRequestDTO;
 import com.example.bookstorebackend.entities.dtos.request.SignUpRequestDTO;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserAuthController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequestDTO signUpRequestDTO){

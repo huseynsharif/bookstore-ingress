@@ -47,4 +47,9 @@ public class StudentManager implements StudentService {
         this.studentDAO.save(student);
         return new SuccessResult("Student updated successfully.");
     }
+
+    @Override
+    public Result readBook(int bookId) {
+        return null;
+    }
 }

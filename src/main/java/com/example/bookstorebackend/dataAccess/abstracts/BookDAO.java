@@ -11,4 +11,6 @@ public interface BookDAO extends JpaRepository<Book, Integer> {
     boolean existsBookById(int id);
 
     List<Book> getAllByAuthor_Id(int authorId);
+
+    List<Book> getAllByNameContainsIgnoreCase(String name);
 }

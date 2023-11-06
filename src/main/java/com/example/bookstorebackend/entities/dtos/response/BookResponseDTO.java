@@ -8,6 +8,7 @@ import lombok.Data;
 public class BookResponseDTO {
 
     private int id;
-    private String name;
+    private String bookName;
+    private String authorName;
 
 }
