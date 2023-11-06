@@ -7,12 +7,8 @@ import com.example.bookstorebackend.core.utilities.results.DataResult;
 import com.example.bookstorebackend.core.utilities.results.Result;
 import com.example.bookstorebackend.core.utilities.results.SuccessDataResult;
 import com.example.bookstorebackend.core.utilities.results.SuccessResult;
-import com.example.bookstorebackend.dataAccess.abstracts.BookDAO;
-import com.example.bookstorebackend.dataAccess.abstracts.StudentDAO;
-import com.example.bookstorebackend.dataAccess.abstracts.UserDAO;
-import com.example.bookstorebackend.entities.Book;
-import com.example.bookstorebackend.entities.Student;
-import com.example.bookstorebackend.entities.User;
+import com.example.bookstorebackend.dataAccess.abstracts.*;
+import com.example.bookstorebackend.entities.*;
 import com.example.bookstorebackend.entities.dtos.request.StudentRequestDTO;
 import com.example.bookstorebackend.entities.dtos.response.BookResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +23,8 @@ public class StudentManager implements StudentService {
     private final StudentDAO studentDAO;
     private final UserDAO userDAO;
     private final BookDAO bookDAO;
+    private final AuthorDAO authorDAO;
+    private final SubscribeDAO subscribeDAO;
 
     @Override
     public Result add(StudentRequestDTO studentRequestDTO) {
@@ -122,5 +120,21 @@ public class StudentManager implements StudentService {
         ).toList();
 
         return new SuccessDataResult<>(response, "All books student currently reading: " + studentId);
+    }
+
+    @Override
+    public Result subscribe(int studentId, int authorId) {
+
+        Student student = this.studentDAO.findById(studentId).orElseThrow(
+                ()-> new NotFoundException("Cannot find student with given studentId: " + studentId)
+        );
+
+        Author author = this.authorDAO.findById(authorId).orElseThrow(
+                ()-> new NotFoundException("Cannot find author with given authorId: " + authorId)
+        );
+
+        Subscribe subscribe = new Subscribe(student, author);
+        this.subscribeDAO.save(subscribe);
+        return new SuccessResult("Successfully subscribed.");
     }
 }

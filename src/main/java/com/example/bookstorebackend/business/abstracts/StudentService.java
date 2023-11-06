@@ -20,4 +20,6 @@ public interface StudentService {
 
     DataResult<List<BookResponseDTO>> getAllCurrentlyReadingsByStudentId(int studentId);
 
+    Result subscribe(int studentId, int authorId);
+
 }

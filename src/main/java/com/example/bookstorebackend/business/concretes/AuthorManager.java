@@ -63,12 +63,9 @@ public class AuthorManager implements AuthorService {
     @Override
     public Result addNewBook(NewBookRequestDTO newBookRequestDTO) {
 
-        Author author = this.authorDAO.findAuthorById(newBookRequestDTO.getAuthorId());
-
-        if (author==null){
-            throw new NotFoundException("Cannot find Author with given authorId: "
-                    + newBookRequestDTO.getAuthorId());
-        }
+        Author author = this.authorDAO.findById(newBookRequestDTO.getAuthorId()).orElseThrow(
+                ()-> new NotFoundException("Cannot find author with given authorId: " + newBookRequestDTO.getAuthorId())
+        );
 
         Book book = new Book(
                 newBookRequestDTO.getName(),
@@ -76,8 +73,6 @@ public class AuthorManager implements AuthorService {
         );
 
         this.bookDAO.save(book);
-
-
         return new SuccessResult("New book successfully saved");
     }
 

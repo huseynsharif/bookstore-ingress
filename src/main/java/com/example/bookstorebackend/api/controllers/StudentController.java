@@ -46,6 +46,13 @@ public class StudentController {
         return ResponseEntity.ok(this.studentService.getAllCurrentlyReadingsByStudentId(studentId));
     }
 
+    @PostMapping("/subscribe")
+    public ResponseEntity<?> subscribe(@RequestParam("studentId") int studentId, @RequestParam("authorId") int authorId){
+
+        return ResponseEntity.ok(this.studentService.subscribe(studentId, authorId));
+
+    }
+
 
 
 }
