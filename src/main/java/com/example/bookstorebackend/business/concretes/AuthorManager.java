@@ -1,6 +1,7 @@
 package com.example.bookstorebackend.business.concretes;
 
 import com.example.bookstorebackend.business.abstracts.AuthorService;
+import com.example.bookstorebackend.core.utilities.emailSendings.abstracts.EmailService;
 import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.IllegalDeletionRequestException;
 import com.example.bookstorebackend.core.utilities.exceptions.customExceptions.NotFoundException;
 import com.example.bookstorebackend.core.utilities.results.DataResult;
@@ -9,10 +10,9 @@ import com.example.bookstorebackend.core.utilities.results.SuccessDataResult;
 import com.example.bookstorebackend.core.utilities.results.SuccessResult;
 import com.example.bookstorebackend.dataAccess.abstracts.AuthorDAO;
 import com.example.bookstorebackend.dataAccess.abstracts.BookDAO;
+import com.example.bookstorebackend.dataAccess.abstracts.SubscribeDAO;
 import com.example.bookstorebackend.dataAccess.abstracts.UserDAO;
-import com.example.bookstorebackend.entities.Author;
-import com.example.bookstorebackend.entities.Book;
-import com.example.bookstorebackend.entities.User;
+import com.example.bookstorebackend.entities.*;
 import com.example.bookstorebackend.entities.dtos.request.AuthorRequestDTO;
 import com.example.bookstorebackend.entities.dtos.request.NewBookRequestDTO;
 import com.example.bookstorebackend.entities.dtos.response.BookResponseDTO;
@@ -28,6 +28,9 @@ public class AuthorManager implements AuthorService {
     private final UserDAO userDAO;
     private final AuthorDAO authorDAO;
     private final BookDAO bookDAO;
+    private final SubscribeDAO subscribeDAO;
+
+    private final EmailService emailService;
 
 
     @Override
@@ -73,6 +76,17 @@ public class AuthorManager implements AuthorService {
         );
 
         this.bookDAO.save(book);
+
+        // Sending notification to subscribes
+        List<Student> students = this.subscribeDAO.findStudentsByAuthorId(newBookRequestDTO.getAuthorId());
+        students.forEach(student -> {
+             this.emailService.sendNotificationEmailHtml(
+                    student.getName(),
+                    student.getUser().getEmail(),
+                    author.getName()
+            );
+        });
+
         return new SuccessResult("New book successfully saved");
     }
 

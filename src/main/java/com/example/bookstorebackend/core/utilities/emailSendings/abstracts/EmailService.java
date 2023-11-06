@@ -13,4 +13,7 @@ public interface EmailService {
 
     Result sendForgotPasswordEmailHtml(String username, String to, String url);
 
+    Result sendNotificationEmailHtml(String studentName, String to, String authorName);
+
+
 }

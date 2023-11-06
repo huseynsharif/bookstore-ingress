@@ -73,6 +73,29 @@ public class EmailManager implements EmailService {
     }
 
     @Override
+    public Result sendNotificationEmailHtml(String studentName, String to, String authorName) {
+        try {
+            Context context = new Context();
+            context.setVariables(Map.of(
+                    "studentName",studentName,
+                    "authorName", authorName
+            ));
+            String body = templateEngine.process("newBookNotificationEmail", context);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("New book notification");
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setText(body, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return new SuccessResult("Notification email was sent.");
+    }
+
+    @Override
     public Result sendForgotPasswordEmailHtml(String username, String to, String url) {
         try {
             Context context = new Context();
